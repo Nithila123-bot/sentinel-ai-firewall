@@ -1,0 +1,7 @@
+{"timestamp": "2026-10-25T04:43:54.617283+00:00", "tool": "calculator", "operation": "calculate", "source": "trusted", "decision": "ALLOW"}
+{"timestamp": "2026-10-25T04:43:54.618169+00:00", "tool": "email", "operation": "send", "source": "trusted", "decision": "REQUIRE_APPROVAL"}
+{"timestamp": "2026-10-25T04:43:54.619192+00:00", "tool": "file", "operation": "delete", "source": "untrusted", "decision": "DENY"}
+{"timestamp": "2026-10-25T04:43:54.619694+00:00", "tool": "file", "operation": "read", "source": "trusted", "decision": "ALLOW"}
+{"timestamp": "2026-10-25T04:46:50.825724+00:00", "tool": "file", "operation": "read", "source": "untrusted", "decision": "ALLOW"}
+{"timestamp": "2026-10-25T04:47:02.441093+00:00", "tool": "unknown", "operation": "delete", "source": "untrusted", "decision": "DENY"}
+{"timestamp": "2026-10-25T04:47:11.760783+00:00", "tool": "email", "operation": "send", "source": "trusted", "decision": "REQUIRE_APPROVAL"}
