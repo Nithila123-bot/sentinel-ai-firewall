@@ -1,5 +1,5 @@
-
 from sentinel.policy_engine import check_action
+
 
 def test_policy():
     cases = [
@@ -12,25 +12,15 @@ def test_policy():
         ("file", "execute", "untrusted", "DENY"),
     ]
 
-    failures = 0
-
     for tool, operation, source, expected in cases:
         actual = check_action(tool, operation, source)
 
-        if actual == expected:
-            print(f"PASS: {tool}/{operation}/{source} -> {actual}")
-        else:
-            print(
-                f"FAIL: {tool}/{operation}/{source} "
-                f"expected {expected}, got {actual}"
-            )
-            failures += 1
-
-    print(f"\nPassed: {len(cases) - failures}/{len(cases)}")
-    return failures == 0
+        assert actual == expected, (
+            f"{tool}/{operation}/{source}: "
+            f"expected {expected}, got {actual}"
+        )
 
 
 if __name__ == "__main__":
-    if not test_policy():
-        raise SystemExit(1)
+    test_policy()
     print("All security policy tests passed!")
