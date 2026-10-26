@@ -1,0 +1,244 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f8faff">
+    <title>Sentinel — AI Security</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{ url_for('static', filename='app.js') }}" defer></script>
+</head>
+<body>
+<div class="app-shell">
+    <aside class="sidebar">
+        <a href="#" class="brand" data-page="overview">
+            <span class="brand-mark">S</span>
+            <span>Sentinel<span class="brand-light"> AI</span></span>
+        </a>
+
+        <p class="nav-label">WORKSPACE</p>
+        <button class="nav-item active" data-page="overview">
+            <span>◫</span> Overview
+        </button>
+        <button class="nav-item" data-page="simulator">
+            <span>◇</span> Policy simulator
+        </button>
+        <button class="nav-item" data-page="audit">
+            <span>☷</span> Audit history
+        </button>
+
+        <div class="sidebar-bottom">
+            <div class="profile-icon">S</div>
+            <div>
+                <strong>Security workspace</strong>
+                <small>Local demo environment</small>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-area">
+        <header class="topbar">
+            <div class="breadcrumb">Sentinel <span>/</span> <b id="breadcrumb">Overview</b></div>
+            <div class="top-actions">
+                <span class="status-dot"></span>
+                <span>LOCAL DEMO</span>
+                <button class="icon-button" id="refreshBtn" title="Refresh data">↻</button>
+            </div>
+        </header>
+
+        <section class="page active" id="overview">
+            <div class="welcome-row">
+                <div>
+                    <p class="eyebrow">SECURITY CENTER</p>
+                    <h1>Security at a glance</h1>
+                    <p class="subtitle">Monitor policy decisions and review simulated activity.</p>
+                </div>
+                <button class="primary-button" data-go="simulator">＋ New simulation</button>
+            </div>
+
+            <div class="notice">
+                <span class="notice-icon">✓</span>
+                <div>
+                    <strong>Policy monitoring is ready</strong>
+                    <p>Requests are evaluated by your local Sentinel policy engine.</p>
+                </div>
+                <span class="notice-tag">LOCAL</span>
+            </div>
+
+            <div class="metrics-grid">
+                <article class="metric-card">
+                    <div class="metric-heading">Total checks <span class="metric-icon blue">↗</span></div>
+                    <div class="metric-number" id="total">0</div>
+                    <p class="metric-caption">Recorded decisions</p>
+                </article>
+                <article class="metric-card">
+                    <div class="metric-heading">Allowed <span class="metric-icon green">✓</span></div>
+                    <div class="metric-number" id="allowed">0</div>
+                    <p class="metric-caption">Permitted requests</p>
+                </article>
+                <article class="metric-card">
+                    <div class="metric-heading">Blocked <span class="metric-icon red">⊘</span></div>
+                    <div class="metric-number" id="denied">0</div>
+                    <p class="metric-caption">Denied requests</p>
+                </article>
+                <article class="metric-card">
+                    <div class="metric-heading">Needs review <span class="metric-icon amber">!</span></div>
+                    <div class="metric-number" id="review">0</div>
+                    <p class="metric-caption">Approval required</p>
+                </article>
+            </div>
+
+            <div class="content-grid">
+                <article class="panel distribution-panel">
+                    <div class="panel-heading">
+                        <div>
+                            <h2>Decision distribution</h2>
+                            <p>Breakdown of recorded policy outcomes</p>
+                        </div>
+                        <span class="live-label">AUDIT DATA</span>
+                    </div>
+                    <div class="chart-layout">
+                        <div class="donut" id="donut">
+                            <div class="donut-center">
+                                <strong id="chartTotal">0</strong>
+                                <span>Total checks</span>
+                            </div>
+                        </div>
+                        <div class="legend">
+                            <div><span class="legend-dot green-bg"></span> Allowed <b id="legendAllowed">0</b></div>
+                            <div><span class="legend-dot red-bg"></span> Blocked <b id="legendDenied">0</b></div>
+                            <div><span class="legend-dot amber-bg"></span> Review <b id="legendReview">0</b></div>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="panel quick-panel">
+                    <div class="panel-heading">
+                        <div>
+                            <h2>Quick actions</h2>
+                            <p>Common security tasks</p>
+                        </div>
+                    </div>
+                    <button class="quick-action" data-go="simulator">
+                        <span class="quick-icon blue">◇</span>
+                        <span><strong>Test a policy</strong><small>Evaluate a simulated request</small></span>
+                        <span class="arrow">→</span>
+                    </button>
+                    <button class="quick-action" data-go="audit">
+                        <span class="quick-icon purple">☷</span>
+                        <span><strong>Review audit history</strong><small>Search recorded decisions</small></span>
+                        <span class="arrow">→</span>
+                    </button>
+                    <a class="quick-action" href="/api/export.csv">
+                        <span class="quick-icon green">↓</span>
+                        <span><strong>Export audit CSV</strong><small>Download a report</small></span>
+                        <span class="arrow">→</span>
+                    </a>
+                </article>
+            </div>
+
+            <article class="panel table-panel">
+                <div class="panel-heading">
+                    <div><h2>Recent activity</h2><p>Latest entries in the local audit log</p></div>
+                    <button class="text-button" data-go="audit">View all →</button>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>TIME</th><th>TOOL</th><th>OPERATION</th><th>SOURCE</th><th>DECISION</th></tr></thead>
+                        <tbody id="recentRows"><tr><td colspan="5" class="empty">Loading audit records…</td></tr></tbody>
+                    </table>
+                </div>
+            </article>
+        </section>
+
+        <section class="page" id="simulator">
+            <div class="page-heading">
+                <p class="eyebrow">POLICY LAB</p>
+                <h1>Policy simulator</h1>
+                <p class="subtitle">Evaluate a request against your configured security rules.</p>
+            </div>
+
+            <div class="simulator-grid">
+                <article class="panel form-panel">
+                    <h2>Request configuration</h2>
+                    <p class="panel-description">Choose the request attributes to test.</p>
+                    <form id="simulatorForm">
+                        <label for="tool">Tool</label>
+                        <select id="tool" required>
+                            <option value="calculator">Calculator</option>
+                            <option value="file">File</option>
+                            <option value="email">Email</option>
+                            <option value="unknown">Unknown tool</option>
+                        </select>
+
+                        <label for="operation">Operation</label>
+                        <select id="operation" required>
+                            <option value="calculate">Calculate</option>
+                            <option value="read">Read</option>
+                            <option value="send">Send</option>
+                            <option value="delete">Delete</option>
+                            <option value="execute">Execute</option>
+                        </select>
+
+                        <label for="source">Request source</label>
+                        <select id="source" required>
+                            <option value="trusted">Trusted</option>
+                            <option value="untrusted">Untrusted</option>
+                        </select>
+
+                        <button class="primary-button full-button" type="submit">Run policy check →</button>
+                        <p class="form-note">Simulation only. No external action will be executed.</p>
+                    </form>
+                </article>
+
+                <article class="panel result-panel">
+                    <div class="result-symbol" id="resultSymbol">◇</div>
+                    <p class="eyebrow">EVALUATION RESULT</p>
+                    <h2 id="resultTitle">Ready to evaluate</h2>
+                    <p id="resultMessage" class="subtitle">Configure your request and run a policy check to see the result.</p>
+                    <div class="result-details" id="resultDetails">
+                        <div><span>Tool</span><b>—</b></div>
+                        <div><span>Operation</span><b>—</b></div>
+                        <div><span>Source</span><b>—</b></div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="page" id="audit">
+            <div class="page-heading">
+                <p class="eyebrow">ACTIVITY RECORDS</p>
+                <h1>Audit history</h1>
+                <p class="subtitle">Search and filter decisions stored in your local audit log.</p>
+            </div>
+            <article class="panel table-panel">
+                <div class="audit-controls">
+                    <input id="searchInput" type="search" placeholder="Search tools, operations, sources…">
+                    <select id="filterDecision" aria-label="Filter by decision">
+                        <option value="all">All decisions</option>
+                        <option value="ALLOW">Allowed</option>
+                        <option value="DENY">Blocked</option>
+                        <option value="REQUIRE_APPROVAL">Needs review</option>
+                    </select>
+                    <a href="/api/export.csv" class="secondary-button">↓ Export CSV</a>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>TIME</th><th>TOOL</th><th>OPERATION</th><th>SOURCE</th><th>DECISION</th></tr></thead>
+                        <tbody id="auditRows"><tr><td colspan="5" class="empty">Loading audit records…</td></tr></tbody>
+                    </table>
+                </div>
+                <p class="table-footer" id="auditCount">0 records</p>
+            </article>
+        </section>
+
+        <footer class="footer">
+            <span>Sentinel AI Firewall</span>
+            <span>Educational prototype · Local demo · Simulated actions only</span>
+        </footer>
+    </main>
+</div>
+<div id="toast" class="toast" role="status"></div>
+</body>
+</html>
