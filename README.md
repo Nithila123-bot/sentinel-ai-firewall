@@ -1,3 +1,5 @@
+🚀 **Live Demo:** [Open Sentinel AI Firewall](https://sentinel-ai-firewall-haj8guagbre2tiiasgxqj.streamlit.app)
+
 # Sentinel — AI Agent Security Firewall
 
 ## Overview
